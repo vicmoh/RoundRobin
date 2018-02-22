@@ -206,6 +206,7 @@ void* findElement(List list, bool (*customCompare)(const void* first,const void*
 List* initializeListPointer(char* (*printFunction)(void* toBePrinted),void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second));
 char* dummyPrint(void* toBePrinted);
 void dummyDelete(void* toBeDeleted);
+void dummyClean(void* toBeDeleted);
 int dummyCompare(const void* first,const void* second);
 
 #endif

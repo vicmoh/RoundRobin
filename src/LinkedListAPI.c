@@ -330,6 +330,10 @@ char* dummyPrint(void* toBePrinted){
 }//end func
 
 void dummyDelete(void* toBeDeleted){
+    free(toBeDeleted);
+}//end func
+
+void dummyClean(void* toBeDeleted){
     return;
 }//end func
 
