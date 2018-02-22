@@ -1,8 +1,8 @@
 CC = gcc
-CFLAGS = -Wall -g -linclude
+CFLAGS = -Wall -g -Iinclude
 
 program:
-	$(CC) &(CFLAGS) src/*.c -o bin/run
+	$(CC) $(CFLAGS) src/*.c -o bin/run
 
 run:
 	./bin/run
