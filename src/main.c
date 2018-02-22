@@ -10,6 +10,9 @@
 #include <stdbool.h>
 #include "LinkedListAPI.h"
 
+//dec macros
+#define debug if(true)printf
+
 typedef struct{
     char fileName[256];
 }Instance;
@@ -19,7 +22,13 @@ Instance* initInstance(){
     return newVars;
 }//end constructor
 
+void readFile(char* fileName){
+    FILE* filePointer = fopen(fileName, "r");
+    fprintf(fileName, );
+    fclose(filePointer);
+}//end func
+
 int main(int argc, char** argv){
-    
+     
     return 0;
 }//end int
