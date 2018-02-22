@@ -19,15 +19,15 @@ typedef struct{
 }Instance;
 
 typedef struct{
-    int process;
-    int thread;
+    int processNumber;
+    int threadNumber;
     int arrivalTime;
 }CPU;
 
 typedef struct{
     int numberOfProcesses;
     int threadSwitch;
-    int process
+    int processSwitch;
 }INFO;
 
 Instance* initInstance(){
