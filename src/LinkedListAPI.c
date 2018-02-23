@@ -213,61 +213,6 @@ void* deleteDataFromList(List* list, void* toBeDeleted){
     return NULL;
 }//end func
 
-void* getFromFront(List list){
-    //if head exist get the head, else return null
-    if(list.head != NULL){
-        return list.head->data;
-    }else{
-        return NULL;
-    }//end if
-}//end func
-
-void* getFromBack(List list){
-    //if tail exist get the head, else return null
-    if(list.tail != NULL){
-        return list.tail->data;
-    }else{
-        return NULL;
-    }//end if
-}//end func
-
-char* toString(List list){
-    //check if there is somehing in the list
-    if(list.head == NULL || list.tail == NULL){
-        char* feedback = calloc(1, sizeof(char) + strlen("No List\n")+9);
-        strcpy(feedback, "No list\n"); 
-        return feedback;
-    }//end if
-    
-    //declare var
-    char *string = calloc(1, sizeof(string)+9);
-    //char *tempString = malloc(sizeof(tempString));
-    int total = 0;
-    Node* currentNode;
-    //init current node at the start of the list
-    currentNode = list.head;
-    //iterate through the list
-    while (currentNode != NULL) {
-        char* stringDataSize = list.printData(currentNode->data);
-        total = total + strlen(stringDataSize) + 1 ;
-        string = realloc(string, sizeof(char) + total);
-        strcat(string, stringDataSize);
-        free(stringDataSize);
-        /*if(currentNode->next != NULL){
-            strcat(string, "\n");
-        }//end if*/
-        currentNode = currentNode->next;
-    }//end while
-    strcat(string, "\0");
-
-    if(DEBUG_LIST)printf("toString head: %s\n", list.printData(list.head->data));
-    if(DEBUG_LIST)printf("toString next: %s\n", list.printData(list.head->next->data));
-    if(DEBUG_LIST)printf("toString tail: %s\n", list.printData(list.tail->data));
-    if(DEBUG_LIST)printf("toString prev: %s\n", list.printData(list.tail->previous->data));
-    if(DEBUG_LIST)printf("toString return: %s\n", string);
-    return string;
-}//end func
-
 ListIterator createIterator(List list){
     ListIterator iterator;
     iterator.current = list.head;
@@ -304,23 +249,6 @@ int getLength(List list){
     }//end while
     list.length = countNodes;
     return countNodes;
-}//end func
-
-void* findElement(List list, bool (*customCompare)(const void* first,const void* second), const void* searchRecord){
-    //check if the list and data is empty
-    if(list.head == NULL){
-        return NULL;
-    }//end
-    //dec vars
-    Node* currentNode = list.head;
-    //go through the list and find the searchRecord
-    while(currentNode != NULL){
-        if(customCompare(currentNode->data, searchRecord) == true){
-            return currentNode->data;
-        }//end if
-        currentNode = currentNode->next;
-    }//end while
-    return NULL;
 }//end func
 
 char* dummyPrint(void* toBePrinted){
