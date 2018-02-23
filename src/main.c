@@ -230,6 +230,7 @@ int main(int argc, char** argv){
     //free and exit
     //fclose(filePointer);
     clearList(&vars->garbageCollector);
+    clearList(&vars->schedule);
     free(vars);
     return 0;
 }//end int
