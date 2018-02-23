@@ -25,13 +25,13 @@ Instance* initVars(){
     return new;
 }//end constructor
 
-CPU* initCPU(){
-    CPU* new = malloc(sizeof(CPU));;
-    new->processNumber = 0;
-    new->threadNumber = 0;
-    new->arrivalTime = 0;
+Mode* initMode(){
+    Mode* new = malloc(sizeof(new));
+    new->detailedMode = false;
+    new->verboseMode = false;
+    new->roundRobinMode = false;
     return new;
-}//end contructor
+}//end constructor
 
 Info* initInfo(){
     Info* new = malloc(sizeof(Info));
@@ -43,13 +43,13 @@ Info* initInfo(){
     return new;
 }//end contructor
 
-Mode* initMode(){
-    Mode* new = malloc(sizeof(new));
-    new->detailedMode = false;
-    new->verboseMode = false;
-    new->roundRobinMode = false;
+CPU* initCPU(){
+    CPU* new = malloc(sizeof(CPU));;
+    new->processNumber = 0;
+    new->threadNumber = 0;
+    new->arrivalTime = 0;
     return new;
-}//end constructor
+}//end contructor
 
 Heap* initHeap(){
     Heap* new = calloc(1, sizeof(Heap));
@@ -84,20 +84,6 @@ Thread* initThread(){
  * functions
  ***********************************************/
 
-int priorityCompare(const void* first, const void* second){
-    //dec casted object
-    Thread* object1 = (Thread*)first;
-    Thread* object2 = (Thread*)second;
-    //check which is is greater
-    if(object1->arrivalTime > object2->arrivalTime){
-        return -1;
-    }//end if
-    if(object1->arrivalTime < object2->arrivalTime){
-        return 1;
-    }//end if
-    return 0;
-}//end func
-
 void setMode(Instance* vars, int argc, char** argv){
     //the execution comandline
     for(int x=0; x<argc; x++){
@@ -111,28 +97,6 @@ void setMode(Instance* vars, int argc, char** argv){
             vars->mode->roundRobinMode = true;
         }//end if
     }//end for
-}//end func
-
-void printFinal(int finalTime, double turnAverage, double CPUUtilization){
-    printf("\n\nTotal Time required is %d units\n",finalTime);
-    printf("Average Turnaround Time is %.2lf time units \n",turnAverage);
-    printf("CPU Utilization is %.2lf \n",CPUUtilization*100);
-}//end func
-
-void printThread(Thread* thread, Instance* vars){
-    if(vars->mode->detailedMode == true) {
-        printf("\nThread %d of Process %d: \n", thread->threadNumber, vars->info->numberOfProcesses);
-        printf("arrival time: %d \n",thread->arrivalTime);
-        printf("service time: %d units \n",thread->CPUTime);
-        printf("I/O time: %d units \n",thread->IOTime);
-        printf("turnaround time: %d units \n", vars->heap->fullTime - thread->arrivalTime) ;
-        printf("finish time: %d units \n\n",vars->heap->fullTime);
-    }//end if
-    if(vars->mode->verboseMode == true) {
-        printf("At time %d: Thread %d of Process %d moves from %s to %s\n", vars->heap->fullTime - thread->arrivalTime - thread->IOTime - thread->CPUTime, thread->threadNumber, vars->info->processNumber, "new", "ready");
-        printf("At time %d: Thread %d of Process %d moves from %s to %s\n", vars->heap->fullTime - thread->CPUTime, thread->threadNumber, vars->info->processNumber, "ready", "running");
-        printf("At time %d: Thread %d of Process %d moves from %s to %s\n", vars->heap->fullTime, thread->threadNumber, vars->info->processNumber, "running", "terminated"/*thread->endState*/);
-    }//end if
 }//end func
 
 void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* vars){
@@ -191,6 +155,42 @@ void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* va
     }//end for
 }//end func
 
+int priorityCompare(const void* first, const void* second){
+    //dec casted object
+    Thread* object1 = (Thread*)first;
+    Thread* object2 = (Thread*)second;
+    //check which is is greater
+    if(object1->arrivalTime > object2->arrivalTime){
+        return -1;
+    }//end if
+    if(object1->arrivalTime < object2->arrivalTime){
+        return 1;
+    }//end if
+    return 0;
+}//end func
+
+void printThread(Thread* thread, Instance* vars){
+    if(vars->mode->detailedMode == true) {
+        printf("\nThread %d of Process %d: \n", thread->threadNumber, vars->info->numberOfProcesses);
+        printf("arrival time: %d \n",thread->arrivalTime);
+        printf("service time: %d units \n",thread->CPUTime);
+        printf("I/O time: %d units \n",thread->IOTime);
+        printf("turnaround time: %d units \n", vars->heap->fullTime - thread->arrivalTime) ;
+        printf("finish time: %d units \n\n",vars->heap->fullTime);
+    }//end if
+    if(vars->mode->verboseMode == true) {
+        printf("At time %d: Thread %d of Process %d moves from %s to %s\n", vars->heap->fullTime - thread->arrivalTime - thread->IOTime - thread->CPUTime, thread->threadNumber, vars->info->processNumber, "new", "ready");
+        printf("At time %d: Thread %d of Process %d moves from %s to %s\n", vars->heap->fullTime - thread->CPUTime, thread->threadNumber, vars->info->processNumber, "ready", "running");
+        printf("At time %d: Thread %d of Process %d moves from %s to %s\n", vars->heap->fullTime, thread->threadNumber, vars->info->processNumber, "running", "terminated"/*thread->endState*/);
+    }//end if
+}//end func
+
+void printFinal(int finalTime, double turnAverage, double CPUUtilization){
+    printf("\n\nTotal Time required is %d units\n",finalTime);
+    printf("Average Turnaround Time is %.2lf time units \n",turnAverage);
+    printf("CPU Utilization is %.2lf%s\n",CPUUtilization*100, "\%");
+}//end func
+
 /***********************************************
  * main function to run the program
  ***********************************************/
@@ -223,9 +223,7 @@ int main(int argc, char** argv){
     double totalAverage = (double)vars->heap->averageTime / (double)vars->heap->threadCount;
     double CPUUtilization = endingTime - timeWasted;
     CPUUtilization = CPUUtilization / endingTime;
-    printf("\n\nTotal Time required is %d units\n",endingTime);
-    printf("Average Turnaround Time is %.2lf time units \n",totalAverage);
-    printf("CPU Utilization is %.2lf%s\n", CPUUtilization*100, "\%");
+    printFinal(endingTime, totalAverage, CPUUtilization);
 
     //free and exit
     //fclose(filePointer);

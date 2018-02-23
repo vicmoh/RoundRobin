@@ -71,14 +71,15 @@ typedef struct{
 
 //constructors
 Instance* initVars();
-CPU* initCPU();
-Info* initInfo();
 Mode* initMode();
+Info* initInfo();
+CPU* initCPU();
 Heap* initHeap();
 //helper vars for the main
-int priorityCompare(const void* first, const void* second);
 void setMode(Instance* vars, int argc, char** argv);
-void printFinal(int finalTime, double turnAverage, double CPUUtilization);
 void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* vars);
+int priorityCompare(const void* first, const void* second);
+void printThread(Thread* thread, Instance* vars);
+void printFinal(int finalTime, double turnAverage, double CPUUtilization);
 
 #endif
