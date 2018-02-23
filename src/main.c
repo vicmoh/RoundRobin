@@ -172,7 +172,20 @@ void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* va
             vars->heap->totalCPU = vars->heap->totalCPU + thread->CPUTime;
             vars->heap->totalIO = vars->heap->totalIO + thread->IOTime;
 
-            insertFront(&vars->schedule, thread);            
+            insertBack(&vars->schedule, thread);            
+        }//end for
+
+        //iterate through the process, calc and display each output depending on the mode
+        ListIterator iterList = createIterator(vars->schedule);
+        for(int x=0; x<getLength(vars->schedule); x++){
+            Thread* thread = nextElement(&iterList);
+            if(thread->threadNumber == 1){
+                vars->heap->fullTime = vars->heap->fullTime + vars->info->processSwitch;
+            }//end if
+            vars->heap->fullTime = vars->heap->fullTime + (thread->CPUTime + thread->IOTime + vars->info->threadSwitch);
+            vars->heap->threadCount = vars->heap->threadCount + 1;
+            vars->heap->averageTime = vars->heap->averageTime + (vars->heap->fullTime - thread->arrivalTime);
+            printThread(thread, vars);
         }//end for
 
     }//end for
@@ -186,26 +199,36 @@ int main(int argc, char** argv){
     //dec vars
     Instance* vars = initVars();
     strcpy(vars->fileName, argv[argc-1]);
-    debug("File name: %s\n", vars->fileName);
+    debug("debug argument number: %d\n", argc);
+    debug("debug file name: %s\n", vars->fileName);
 
     //open the file
-    FILE* filePointer = fopen(vars->fileName, "r");
-    if(filePointer == NULL){
-        printf("Invalid file name: %s\n", vars->fileName);
-        clearList(&vars->garbageCollector);
-        free(vars);
-        return 0;
-    }//end if
+    //FILE* filePointer = fopen(vars->fileName, "r");
+    // if(filePointer == NULL){
+    //     printf("Invalid file name: %s\n", vars->fileName);
+    //     clearList(&vars->garbageCollector);
+    //     free(vars);
+    //     return 0;
+    // }//end if
     setMode(vars, argc, argv);
 
     //scan the first line and then calculate the time
-    fscanf(filePointer, "%d %d %d", &vars->info->numberOfProcesses, &vars->info->threadSwitch, &vars->info->processSwitch);
+    fscanf(stdin, "%d %d %d", &vars->info->numberOfProcesses, &vars->info->threadSwitch, &vars->info->processSwitch);
     int timeWasted = vars->info->numberOfProcesses * vars->info->numberOfProcesses; 
     int endingTime = timeWasted;
-    calculate(filePointer, &endingTime, &timeWasted, vars);
+    calculate(stdin, &endingTime, &timeWasted, vars);
     
+    endingTime = endingTime + (vars->heap->totalCPU + vars->heap->totalIO);
+    debug("debug threadCount: %d\n", vars->heap->threadCount);
+    double totalAverage = (double)vars->heap->averageTime / (double)vars->heap->threadCount;
+    double CPUUtilization = endingTime - timeWasted;
+    CPUUtilization = CPUUtilization / endingTime;
+    printf("\n\nTotal Time required is %d units\n",endingTime);
+    printf("Average Turnaround Time is %.2lf time units \n",totalAverage);
+    printf("CPU Utilization is %.2lf%s\n", CPUUtilization*100, "\%");
+
     //free and exit
-    fclose(filePointer);
+    //fclose(filePointer);
     clearList(&vars->garbageCollector);
     free(vars);
     return 0;
