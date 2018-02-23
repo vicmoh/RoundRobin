@@ -14,7 +14,6 @@
 #include <stdbool.h>
 #include <assert.h>
 
-
 typedef struct listNode{
     void* data;
     struct listNode* previous;
