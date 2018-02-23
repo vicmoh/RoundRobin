@@ -28,7 +28,6 @@ typedef struct listHead{
     int length;
     void (*deleteData)(void* toBeDeleted);
     int (*compare)(const void* first,const void* second);
-    char* (*printData)(void* toBePrinted);
 } List;
 
 typedef struct iter{
@@ -36,8 +35,8 @@ typedef struct iter{
 } ListIterator;
 
 //functions for the list
-List* initializeListPointer(char* (*printFunction)(void* toBePrinted),void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second));
-List initializeList(char* (*printFunction)(void* toBePrinted),void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second));
+List* initializeListPointer(void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second));
+List initializeList(void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second));
 Node* initializeNode(void* data);
 void insertFront(List* list, void* toBeAdded);
 void insertBack(List* list, void* toBeAdded);
@@ -49,7 +48,6 @@ ListIterator createIterator(List list);
 void* nextElement(ListIterator* iter);
 int getLength(List list);
 //dummy function for the init of list
-char* dummyPrint(void* toBePrinted);
 void dummyDelete(void* toBeDeleted);
 void dummyClean(void* toBeDeleted);
 int dummyCompare(const void* first,const void* second);

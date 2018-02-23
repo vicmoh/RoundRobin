@@ -3,6 +3,7 @@
  * @author Vicky Mohammad
  * @date 2018
  * @brief A doubly linklist API
+ * this is API is a modified verion from CIS*2750 that I made
  */
 
 #include <stdio.h>
@@ -14,7 +15,7 @@
 //macros
 #define DEBUG_LIST false
 
-List initializeList(char* (*printFunction)(void* toBePrinted),void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second)){
+List initializeList(void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second)){
     //init all the instance vars of the list
     List newList;
     newList.head = NULL;
@@ -23,12 +24,11 @@ List initializeList(char* (*printFunction)(void* toBePrinted),void (*deleteFunct
     //assign the pointer functions
     newList.deleteData = deleteFunction;
     newList.compare = compareFunction;
-    newList.printData = printFunction;
     //return the new list
     return newList;
 }//end constructor
 
-List* initializeListPointer(char* (*printFunction)(void* toBePrinted),void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second)){
+List* initializeListPointer(void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second)){
     //init all the instance vars of the list
     List* newList = malloc(sizeof(List));
     newList->head = NULL;
@@ -37,7 +37,6 @@ List* initializeListPointer(char* (*printFunction)(void* toBePrinted),void (*del
     //assign the pointer functions
     newList->deleteData = deleteFunction;
     newList->compare = compareFunction;
-    newList->printData = printFunction;
     //return the new list
     return newList;
 }//end constructor
@@ -249,12 +248,6 @@ int getLength(List list){
     }//end while
     list.length = countNodes;
     return countNodes;
-}//end func
-
-char* dummyPrint(void* toBePrinted){
-    char* tempString = calloc(1, sizeof(char)*256);
-    strcpy(tempString, "");
-    return tempString;
 }//end func
 
 void dummyDelete(void* toBeDeleted){

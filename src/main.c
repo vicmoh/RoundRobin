@@ -11,8 +11,8 @@
 
 Instance* initVars(){
     Instance* new = malloc(sizeof(Instance));
-    new->garbageCollector = initializeList(dummyPrint, dummyDelete, dummyCompare);
-    new->schedule = initializeList(dummyPrint, dummyDelete, priorityCompare);
+    new->garbageCollector = initializeList(dummyDelete, dummyCompare);
+    new->schedule = initializeList(dummyDelete, priorityCompare);
     new->cpu = initCPU();
     new->info = initInfo();
     new->mode = initMode();
