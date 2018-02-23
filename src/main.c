@@ -215,7 +215,7 @@ int main(int argc, char** argv){
     //scan the first line and then calculate the time
     fscanf(stdin, "%d %d %d", &vars->info->numberOfProcesses, &vars->info->threadSwitch, &vars->info->processSwitch);
     int timeWasted = vars->info->numberOfProcesses * vars->info->numberOfProcesses; 
-    int endingTime = timeWasted;
+    int endingTime = vars->info->numberOfProcesses * vars->info->numberOfProcesses;
     calculate(stdin, &endingTime, &timeWasted, vars);
     
     endingTime = endingTime + (vars->heap->totalCPU + vars->heap->totalIO);
