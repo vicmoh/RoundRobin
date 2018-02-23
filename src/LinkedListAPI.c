@@ -15,6 +15,10 @@
 //macros
 #define DEBUG_LIST false
 
+/*************************************************************
+ * constructors for the list
+ *************************************************************/
+
 List initializeList(void (*deleteFunction)(void* toBeDeleted),int (*compareFunction)(const void* first,const void* second)){
     //init all the instance vars of the list
     List newList;
@@ -50,6 +54,10 @@ Node* initializeNode(void* data){
     //return the new node
     return newNode;
 }//end node
+
+/*************************************************************
+ * mutators and acccessors
+ *************************************************************/
 
 void insertFront(List* list, void* toBeAdded){
     //check if list or the data is nil
@@ -249,6 +257,10 @@ int getLength(List list){
     list.length = countNodes;
     return countNodes;
 }//end func
+
+/*************************************************************
+ * dummy functions for the init list
+ *************************************************************/
 
 void dummyDelete(void* toBeDeleted){
     free(toBeDeleted);
