@@ -6,7 +6,7 @@
 #include "header.h"
 
 /***********************************************
- * Constructors
+ * constructors
  ***********************************************/
 
 Instance* initVars(){
@@ -81,7 +81,7 @@ Thread* initThread(){
 }//end constructor
 
 /***********************************************
- * Functions
+ * functions
  ***********************************************/
 
 int priorityCompare(const void* first, const void* second){
@@ -192,7 +192,7 @@ void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* va
 }//end func
 
 /***********************************************
- * Main function to run the program
+ * main function to run the program
  ***********************************************/
 
 int main(int argc, char** argv){
