@@ -238,8 +238,7 @@ int main(int argc, char** argv){
     vars->endingTime = vars->endingTime + (vars->heap->totalCPU + vars->heap->totalIO);
     debug("debug threadCount: %d\n", vars->heap->threadCount);
     double totalAverage = (double)vars->heap->averageTime / (double)vars->heap->threadCount;
-    double CPUUtilization = vars->endingTime - vars->timeWasted;
-    CPUUtilization = CPUUtilization / vars->endingTime;
+    double CPUUtilization = (double)(vars->endingTime - vars->timeWasted) / (double)vars->endingTime;
     printFinal(vars->endingTime, totalAverage, CPUUtilization);
 
     //free and exit
