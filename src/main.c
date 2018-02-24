@@ -12,12 +12,15 @@
 Instance* initVars(){
     Instance* new = malloc(sizeof(Instance));
     new->garbageCollector = initializeList(dummyDelete, dummyCompare);
-    new->schedule = initializeList(dummyDelete, priorityCompare);
+    new->schedule = initializeList(dummyClean, priorityCompare);
     new->cpu = initCPU();
     new->info = initInfo();
     new->mode = initMode();
     new->heap = initHeap();
     new->quantity = -1;
+    new->endingTime = 0;
+    new->timeWasted = 0;
+    new->endLoop = 0;
     insertBack(&new->garbageCollector, new->cpu);
     insertBack(&new->garbageCollector, new->info);
     insertBack(&new->garbageCollector, new->mode);
@@ -99,7 +102,7 @@ void setMode(Instance* vars, int argc, char** argv){
     }//end for
 }//end func
 
-void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* vars){
+void process1(FILE* filePointer, Instance* vars){
     //loop through the number of processes
     for(int x=0; x<vars->info->numberOfProcesses; x++){
         //dec vars
@@ -107,37 +110,11 @@ void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* va
         vars->info->numberOfThread = 0;
         fscanf(filePointer, "%d %d", &vars->info->processNumber, &vars->info->numberOfThread);
         //calc
-        endingTime = endingTime + (vars->info->threadSwitch * vars->info->numberOfThread);
-        timeWasted = timeWasted + (vars->info->threadSwitch * vars->info->numberOfThread);
-
-        //loop the number of thread
-        for(int y=0; y<vars->info->numberOfThread; y++){
-            //init the thread 
-            Thread* thread = initThread();
-            insertBack(&vars->garbageCollector, thread);
-            //scan the cpu
-            fscanf(filePointer, "%d %d %d", &thread->threadNumber, &thread->arrivalTime, &thread->numberOfCPU);
-            int endLoop = thread->numberOfCPU-1;
-            for(int z=0; z<endLoop; z++){
-                fscanf(filePointer, "%d %d %d", &thread->temp, &thread->tempCPUTime, &thread->tempIOTime);
-                thread->tempTime = thread->tempTime + (thread->tempCPUTime + thread->tempIOTime);
-                //check the check if it reach 0
-                if(!((thread->tempTime - vars->quantity) < 0)){
-                    if(vars->quantity >= 0){
-                        thread->CPUTime = thread->CPUTime - vars->quantity;
-                        thread->IOTime = thread->IOTime - vars->quantity;
-                    }//end if
-                }//end if
-                thread->CPUTime = thread->CPUTime + thread->CPUTime;
-                thread->IOTime = thread->IOTime + thread->tempIOTime;
-            }//end for
-            fscanf(filePointer, "%d %d", &thread->temp, &thread->tempCPUTime);
-            thread->CPUTime = thread->CPUTime + thread->tempCPUTime;
-            vars->heap->totalCPU = vars->heap->totalCPU + thread->CPUTime;
-            vars->heap->totalIO = vars->heap->totalIO + thread->IOTime;
-
-            insertBack(&vars->schedule, thread);            
-        }//end for
+        vars->endingTime = vars->endingTime + (vars->info->threadSwitch * vars->info->numberOfThread);
+        vars->timeWasted = vars->timeWasted + (vars->info->threadSwitch * vars->info->numberOfThread);
+        
+        //call the next process
+        process2(filePointer, vars);
 
         //iterate through the process, calc and display each output depending on the mode
         ListIterator iterList = createIterator(vars->schedule);
@@ -152,6 +129,46 @@ void calculate(FILE* filePointer, int* endingTime, int* timeWasted, Instance* va
             printThread(thread, vars);
         }//end for
 
+    }//end for
+}//end func
+
+void process2(FILE* filePointer, Instance* vars){
+    //loop the number of thread
+    for(int y=0; y<vars->info->numberOfThread; y++){
+        //init the thread 
+        Thread* thread = initThread();
+        insertBack(&vars->garbageCollector, thread);
+        //scan the cpu
+        fscanf(filePointer, "%d %d %d", &thread->threadNumber, &thread->arrivalTime, &thread->numberOfCPU);
+        vars->endLoop = thread->numberOfCPU-1;
+
+        //call the next process
+        process3(filePointer, thread, vars);
+        
+        //scan the next
+        fscanf(filePointer, "%d %d", &thread->temp, &thread->tempCPUTime);
+        thread->CPUTime = thread->CPUTime + thread->tempCPUTime;
+        vars->heap->totalCPU = vars->heap->totalCPU + thread->CPUTime;
+        vars->heap->totalIO = vars->heap->totalIO + thread->IOTime;
+
+        //insert the thread to the list
+        insertBack(&vars->schedule, thread);            
+    }//end for
+}//end func
+
+void process3(FILE* filePointer, Thread* thread, Instance* vars){
+    for(int z=0; z<vars->endLoop; z++){
+        fscanf(filePointer, "%d %d %d", &thread->temp, &thread->tempCPUTime, &thread->tempIOTime);
+        thread->tempTime = thread->tempTime + (thread->tempCPUTime + thread->tempIOTime);
+        //check the check if it reach 0
+        if(!((thread->tempTime - vars->quantity) < 0)){
+            if(vars->quantity >= 0){
+                thread->CPUTime = thread->CPUTime - vars->quantity;
+                thread->IOTime = thread->IOTime - vars->quantity;
+            }//end if
+        }//end if
+        thread->CPUTime = thread->CPUTime + thread->CPUTime;
+        thread->IOTime = thread->IOTime + thread->tempIOTime;
     }//end for
 }//end func
 
@@ -214,16 +231,16 @@ int main(int argc, char** argv){
 
     //scan the first line and then calculate the time
     fscanf(stdin, "%d %d %d", &vars->info->numberOfProcesses, &vars->info->threadSwitch, &vars->info->processSwitch);
-    int timeWasted = vars->info->numberOfProcesses * vars->info->numberOfProcesses; 
-    int endingTime = vars->info->numberOfProcesses * vars->info->numberOfProcesses;
-    calculate(stdin, &endingTime, &timeWasted, vars);
+    vars->timeWasted = vars->info->numberOfProcesses * vars->info->numberOfProcesses; 
+    vars->endingTime = vars->info->numberOfProcesses * vars->info->numberOfProcesses;
+    process1(stdin, vars);
     
-    endingTime = endingTime + (vars->heap->totalCPU + vars->heap->totalIO);
+    vars->endingTime = vars->endingTime + (vars->heap->totalCPU + vars->heap->totalIO);
     debug("debug threadCount: %d\n", vars->heap->threadCount);
     double totalAverage = (double)vars->heap->averageTime / (double)vars->heap->threadCount;
-    double CPUUtilization = endingTime - timeWasted;
-    CPUUtilization = CPUUtilization / endingTime;
-    printFinal(endingTime, totalAverage, CPUUtilization);
+    double CPUUtilization = vars->endingTime - vars->timeWasted;
+    CPUUtilization = CPUUtilization / vars->endingTime;
+    printFinal(vars->endingTime, totalAverage, CPUUtilization);
 
     //free and exit
     //fclose(filePointer);
