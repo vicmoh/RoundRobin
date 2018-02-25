@@ -25,5 +25,5 @@ So, make sure to have no comments for the input files
    moves from the ready states to the running state and the CPU is on idle
 3) My program simulation  does not compensate for switching if a thread moves 
    from running state to blocked state.
-4) During the process if therad is interrupted, it does not include
+4) During the process if thread is interrupted, it does not include
    switch overhead on my simulation.

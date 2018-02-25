@@ -9,7 +9,7 @@
 #include "LinkedListAPI.h"
 
 //dec macros
-#define debug if(true)printf
+#define debug if(false)printf
 
 typedef struct{
     int processNumber;
