@@ -23,7 +23,7 @@ So, make sure to have no comments for the input files
    time for every new thread occurs.
 2) My program simulation also includes the switch overhead if thread
    moves from the ready states to the running state and the CPU is on idle
-3) My program simulation  does not compensate for switching if a thread moves 
+3) My program simulation does not compensate for switching if a thread moves 
    from running state to blocked state.
 4) During the process if thread is interrupted, it does not include
    switch overhead on my simulation.
