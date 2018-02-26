@@ -107,7 +107,7 @@ void process1(FILE* filePointer, Instance* vars){
     for(int x=0; x<vars->info->numberOfProcesses; x++){
         //dec vars
         vars->info->processNumber = 0;
-        vars->info->numberOfThread = 0;
+        vars->info->numberOfThread = vars->info->processNumber;
         fscanf(filePointer, "%d %d", &vars->info->processNumber, &vars->info->numberOfThread);
         //calc
         vars->endingTime = vars->endingTime + (vars->info->threadSwitch * vars->info->numberOfThread);
@@ -188,7 +188,7 @@ int priorityCompare(const void* first, const void* second){
 
 void printThread(Thread* thread, Instance* vars){
     if(vars->mode->detailedMode == true) {
-        printf("\nThread %d of Process %d: \n", thread->threadNumber, vars->info->numberOfProcesses);
+        printf("Thread %d of Process %d: \n", thread->threadNumber, vars->info->numberOfProcesses);
         printf("arrival time: %d \n",thread->arrivalTime);
         printf("service time: %d units \n",thread->CPUTime);
         printf("I/O time: %d units \n",thread->IOTime);
@@ -203,7 +203,7 @@ void printThread(Thread* thread, Instance* vars){
 }//end func
 
 void printFinal(int finalTime, double turnAverage, double CPUUtilization){
-    printf("\n\nTotal Time required is %d units\n",finalTime);
+    printf("\nTotal Time required is %d units\n",finalTime);
     printf("Average Turnaround Time is %.2lf time units \n",turnAverage);
     printf("CPU Utilization is %.2lf%s\n",CPUUtilization*100, "\%");
 }//end func
