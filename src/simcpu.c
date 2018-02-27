@@ -70,7 +70,6 @@ Thread* initThread(){
     new->threadNumber = 0;
     new->processNumber = 0;
     new->arrivalTime = 0;
-    //new->numberOfCPU = 0;
     //temp CPU
     new->tempCPUTime = 0;
     new->tempIOTime = 0;
