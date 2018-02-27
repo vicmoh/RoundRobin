@@ -9,17 +9,13 @@
 #include "LinkedListAPI.h"
 
 //dec macros
-#define debug if(false)printf
-
-typedef struct{
-    int processNumber;
-    int threadNumber;
-    int arrivalTime;
-}CPU;
+#define debug if(true)printf
 
 typedef struct{
     //main at the start
     int numberOfProcesses;
+    int numberOfCPU;
+    //switch
     int threadSwitch;
     int processSwitch;
     //after main when parsing
@@ -47,11 +43,10 @@ typedef struct{
     char fileName[256];
     List garbageCollector;
     List schedule;
-    CPU* cpu;
     Info* info;
     Mode* mode;
     Heap* heap;
-    int quantity;
+    int quantum;
     int endingTime;
     int timeWasted;
     int endLoop;
@@ -61,8 +56,10 @@ typedef struct{
     //IO & CPU time
     int IOTime;
     int CPUTime;
+    int fullTime;
     //for the thread
     int threadNumber;
+    int processNumber;
     int arrivalTime;
     int numberOfCPU;
     //temp CPU
@@ -76,7 +73,6 @@ typedef struct{
 Instance* initVars();
 Mode* initMode();
 Info* initInfo();
-CPU* initCPU();
 Heap* initHeap();
 //helper vars for the main
 void setMode(Instance* vars, int argc, char** argv);
