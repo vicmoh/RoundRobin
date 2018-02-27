@@ -11,6 +11,7 @@ such include for the header files To run the program.
 (if inputFile.txt is in a folder use "./the_folder_name/inputFile.txt 
 to run the program rather than just the name of the file")
 
+Example
 * To run FCFS, type "./bin/run -r 10 < inputFile.txt"
 * To run Round Robin, type "./bin/run -d -r 10 < inputFile.txt"
 * To run Verbose Mode, type "./bin/run -v 10 < inputFile.txt"
