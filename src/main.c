@@ -13,6 +13,7 @@ Instance* initVars(){
     Instance* new = malloc(sizeof(Instance));
     new->garbageCollector = initializeList(dummyDelete, dummyCompare);
     new->schedule = initializeList(dummyClean, priorityCompare);
+    new->completed = initializeList(dummyClean, priorityCompare);
     new->info = initInfo();
     new->mode = initMode();
     new->heap = initHeap();
@@ -116,14 +117,28 @@ void process1(FILE* filePointer, Instance* vars){
         //iterate through the process, calc and display each output depending on the mode
         ListIterator iterList = createIterator(vars->schedule);
         for(int y=0; y<getLength(vars->schedule); y++){
+            bool ifNotComplete = true;
             Thread* thread = nextElement(&iterList);
-            if(thread->threadNumber == 1){
-                vars->heap->fullTime = vars->heap->fullTime + vars->info->processSwitch;
+            
+            //check if the process is already compleated
+            ListIterator completeIter = createIterator(vars->completed); 
+            for(int z=0; z<getLength(vars->completed); z++){
+                Thread* completeThread = nextElement(&completeIter);
+                if(thread->processNumber == completeThread->processNumber && thread->threadNumber == completeThread->threadNumber){
+                    ifNotComplete = false;
+                }//end if
+            }//end for
+
+            if(ifNotComplete == true){
+                if(thread->threadNumber == 1){
+                    vars->heap->fullTime = vars->heap->fullTime + vars->info->processSwitch;
+                }//end if
+                vars->heap->fullTime = vars->heap->fullTime + (thread->CPUTime + thread->IOTime + vars->info->threadSwitch);
+                vars->heap->threadCount = vars->heap->threadCount + 1;
+                vars->heap->averageTime = vars->heap->averageTime + (vars->heap->fullTime - thread->arrivalTime);
+                printThread(thread, vars);
             }//end if
-            vars->heap->fullTime = vars->heap->fullTime + (thread->CPUTime + thread->IOTime + vars->info->threadSwitch);
-            vars->heap->threadCount = vars->heap->threadCount + 1;
-            vars->heap->averageTime = vars->heap->averageTime + (vars->heap->fullTime - thread->arrivalTime);
-            printThread(thread, vars);
+            insertFront(&vars->completed, thread);
         }//end for
 
     }//end for

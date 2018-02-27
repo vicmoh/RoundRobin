@@ -9,7 +9,7 @@
 #include "LinkedListAPI.h"
 
 //dec macros
-#define debug if(true)printf
+#define debug if(false)printf
 
 typedef struct{
     //main at the start
@@ -43,6 +43,7 @@ typedef struct{
     char fileName[256];
     List garbageCollector;
     List schedule;
+    List completed;
     Info* info;
     Mode* mode;
     Heap* heap;

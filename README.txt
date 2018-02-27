@@ -11,8 +11,10 @@
 
 -------------<<< RESTRICTION & LIMITATION >>>-------------
 * Program will crash if there is comments in the input files
-So, make sure to have no comments for the input files
+  So, make sure to have no comments for the input files
 * The Round Robin may not give the right output calculation
+* a number (quantum) MUST BE AFTER "-r" or it will give
+  the wrong ouput, so please make SURE TO PUT NUMBER AFTER "-r"
 
 ---------------------<<< REFERENCE >>>---------------------
 * I use linklist API that I created from the CIS*2750 course
@@ -25,7 +27,7 @@ So, make sure to have no comments for the input files
 4) Does your simulation include switch overhead if a thread is interrupted (due to a time slice) and either the ready queue
    is empty or the thread has the highest priority?
 
-1) For my algorithm my program simulator includes switch overhead 
+1) For my algorithm, my program simulator includes switch overhead 
    time for every new thread occurs.
 2) My program simulation also includes the switch overhead if thread
    moves from the ready states to the running state and the CPU is on idle
